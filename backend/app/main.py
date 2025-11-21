@@ -1,6 +1,15 @@
 from fastapi import FastAPI
-from routes import cultivos
+from fastapi.middleware.cors import CORSMiddleware
+from .routes import cultivos
 
-app = FastAPI(title="AgroLink API")
+app = FastAPI()
+
+# CORS para que frontend (Vite) pueda hacer peticiones
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 app.include_router(cultivos.router)

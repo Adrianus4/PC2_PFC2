@@ -1,20 +1,22 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
+from typing import List
 
-router = APIRouter(prefix="/cultivos", tags=["Cultivos"])
+router = APIRouter()
 
 class Cultivo(BaseModel):
     nombre: str
     area: float
     costo: float
 
-cultivos_db = []
+# Base de datos temporal en memoria
+cultivos_db: List[Cultivo] = []
 
-@router.post("/")
-def crear_cultivo(cultivo: Cultivo):
-    cultivos_db.append(cultivo)
-    return {"msg": "Cultivo registrado"}
-
-@router.get("/")
-def listar_cultivos():
+@router.get("/cultivos", response_model=List[Cultivo])
+async def get_cultivos():
     return cultivos_db
+
+@router.post("/cultivos", response_model=Cultivo)
+async def add_cultivo(cultivo: Cultivo):
+    cultivos_db.append(cultivo)
+    return cultivo
